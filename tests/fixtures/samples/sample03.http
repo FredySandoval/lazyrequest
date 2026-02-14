@@ -1,0 +1,12 @@
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+GET {{baseUrl}}/returns200sample03 HTTP/1.1
+
+###
+# Scoped variable example
+@baseUrl = http://localhost:8080/scoped
+GET {{baseUrl}}/returns200sample03 HTTP/1.1
+
+###
+GET {{baseUrl}}/returns200sample03 HTTP/1.1

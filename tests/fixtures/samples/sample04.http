@@ -1,0 +1,83 @@
+# =========================================================
+# LAZYREQUEST feature showcase template (single file)
+# Covers: comments, file vars, scoped vars, recursive vars,
+# request headers/body, expected response assertions,
+# default 200 assertion, json/exact/partial(wildcard) body matching
+# =========================================================
+
+# File-level variables
+@scheme = http
+@host = localhost
+@port = 8080
+@baseUrl = {{scheme}}://{{host}}:{{port}}
+@json = application/json
+@apiToken = demo-token
+@userId = 123
+
+###
+# 1) Default assertion feature:
+# If no expected response block is provided, status must be 200
+GET {{baseUrl}}/health HTTP/1.1
+Accept: {{json}}
+
+###
+# 2) Request + expected response (JSON comparison strategy)
+GET {{baseUrl}}/users/{{userId}} HTTP/1.1
+Accept: {{json}}
+Authorization: Bearer {{apiToken}}
+
+###
+# Expected response for previous request
+@userUrl = {{baseUrl}}/users/{{userId}}
+HTTP/1.1 200 OK
+Content-Type: {{json}}
+Location: {{userUrl}}
+
+{"id":{{userId}},"url":"{{userUrl}}"}
+
+###
+# 3) Scoped/block variable override (applies only in this block)
+@baseUrl = http://localhost:8080/scoped
+POST {{baseUrl}}/users HTTP/1.1
+Content-Type: {{json}}
+X-Env: scoped
+
+{
+  "name": "John Doe",
+  "email": "john@example.com"
+}
+
+###
+# Expected response for scoped request
+HTTP/1.1 201 Created
+Content-Type: {{json}}
+Location: http://localhost:8080/scoped/users/123
+
+{"ok":true,"id":123}
+
+###
+# 4) Scope reset demo: back to file-level baseUrl
+GET {{baseUrl}}/health HTTP/1.1
+Accept: text/plain
+
+###
+# 5) Exact text comparison strategy
+GET {{baseUrl}}/plain HTTP/1.1
+Accept: text/plain
+
+###
+HTTP/1.1 200 OK
+Content-Type: text/plain
+
+exact-value
+
+###
+# 6) Partial/wildcard comparison strategy
+GET {{baseUrl}}/page HTTP/1.1
+Accept: text/html
+
+###
+HTTP/1.1 200 OK
+Content-Type: text/html
+
+<html>*hello*</html>

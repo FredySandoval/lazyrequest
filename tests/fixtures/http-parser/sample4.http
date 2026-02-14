@@ -1,0 +1,11 @@
+@contentType = application/json
+@baseUrl = http://localhost:8080
+@url1 = {{baseUrl}}/fixtures/http-parser/sample4-GET
+@url2 = {{baseUrl}}/fixtures/http-parser/sample4-POST
+###
+GET {{url1}} HTTP/1.1
+Accept: application/json
+
+###
+POST {{url2}} HTTP/1.1
+Accept: {{contentType}}

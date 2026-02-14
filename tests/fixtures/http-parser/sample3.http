@@ -1,0 +1,11 @@
+@baseUrl = http://localhost:8080
+@token = abc123
+
+GET {{baseUrl}}/fixtures/http-parser/sample3-GET HTTP/1.1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+POST {{baseUrl}}/fixtures/http-parser/sample3-POST
+Authorization: Bearer {{token}}

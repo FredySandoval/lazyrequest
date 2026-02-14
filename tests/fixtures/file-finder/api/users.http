@@ -1,0 +1,10 @@
+GET http://localhost:8080/fixtures/file-finder/api/users1
+
+###
+
+POST http://localhost:8080/fixtures/file-finder/api/users2
+Content-Type: application/json
+
+{
+  "name": "John Doe"
+}
