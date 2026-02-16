@@ -1,23 +1,22 @@
 {
-  "name": "07_lazyrequest_bun",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "build": "bun build --compile ./src/index.ts --outfile ./lazyrequest",
-    "typecheck": "bunx tsc --noEmit"
-  },
+  "name": "lazyrequest",
+  "version": "1.0.0",
   "devDependencies": {
+    "@fredy-dev/http-parser": "^2.0.0",
     "@types/bun": "latest",
-    "pino-pretty": "^13.1.3"
+    "@typescript/native-preview": "^7.0.0-dev.20260215.1",
+    "commander": "^14.0.3",
+    "fast-glob": "^3.3.3",
+    "pino": "^10.3.1"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
-  "dependencies": {
-    "@fredy-dev/http-parser": "^1.0.4",
-    "commander": "^14.0.3",
-    "fast-glob": "^3.3.3",
-    "pino": "^10.3.0"
+  "description": "A lightweight minimal API Testing Client tool inspired by REST Client syntax.",
+  "scripts": {
+    "build": "bun run script/build.ts",
+    "package": "bun run script/package.ts",
+    "test": "bun test --concurrent --timeout 30000",
+    "typecheck": "tsgo --noEmit"
   }
 }

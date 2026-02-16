@@ -1,0 +1,41 @@
+name: Release Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        type: choice
+        options: [major, minor, patch]
+      version:
+        type: string
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build targets
+        run: bun run build
+
+      - name: Package targets
+        run: bun run package
+
+      - name: Upload packaged artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-packages
+          path: |
+            dist/**/*.zip
+            dist/**/*.tar.gz
