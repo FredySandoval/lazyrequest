@@ -8,13 +8,6 @@ class Logger {
     this.pinoLogger = pino({
       base: null,
       level: "debug",
-      transport: {
-        target: "pino-pretty",
-        options: {
-          colorize: true,
-          translateTime: "SYS:HH:MM:ss",
-        },
-      },
     });
   }
 
