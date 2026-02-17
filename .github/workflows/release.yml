@@ -11,6 +11,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - "v*"
 
 permissions:
   contents: write
@@ -38,8 +40,12 @@ jobs:
           base_version="$(bun -e "import pkg from './package.json'; console.log(pkg.version)")"
           input_version="${{ github.event.inputs.version || '' }}"
           bump="${{ github.event.inputs.bump || '' }}"
+          ref_name="${{ github.ref_name }}"
+          ref_type="${{ github.ref_type }}"
 
-          if [ -n "$input_version" ]; then
+          if [ "$ref_type" = "tag" ]; then
+            version="${ref_name#v}"
+          elif [ -n "$input_version" ]; then
             version="$input_version"
           elif [ -n "$bump" ]; then
             bun -e "
@@ -84,14 +90,14 @@ jobs:
             dist/**/*.tar.gz
 
       - name: Setup Node for npm publish
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' || github.ref_type == 'tag'
         uses: actions/setup-node@v4
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
       - name: Publish to npm registry
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' || github.ref_type == 'tag'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "false"
