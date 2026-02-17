@@ -1,4 +1,4 @@
-name: Release
+name: Release Build
 
 on:
   workflow_dispatch:
@@ -6,92 +6,36 @@ on:
       bump:
         type: choice
         options: [major, minor, patch]
-        default: patch
-        required: false
       version:
         type: string
-        required: false
   push:
-    tags:
-      - "v*"
-
-permissions:
-  contents: write
+    branches:
+      - main
 
 jobs:
-  release:
+  build-and-package:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
-
-      - name: Resolve release version
-        id: release_meta
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          REF_NAME: ${{ github.ref_name }}
-          INPUT_VERSION: ${{ github.event.inputs.version }}
-          INPUT_BUMP: ${{ github.event.inputs.bump }}
-        run: bun run script/resolve-release-version.ts
-
-      - name: Create and push tag
-        if: github.event_name == 'workflow_dispatch'
-        env:
-          TAG: ${{ steps.release_meta.outputs.tag }}
-        run: bun run script/create-release-tag.ts
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
       - name: Build targets
-        run: |
-          attempts=0
-          max_attempts=3
-          until [ "$attempts" -ge "$max_attempts" ]; do
-            attempts=$((attempts + 1))
-            echo "Build attempt $attempts/$max_attempts"
-            if bun run build; then
-              break
-            fi
-            if [ "$attempts" -ge "$max_attempts" ]; then
-              echo "Build failed after $max_attempts attempts"
-              exit 1
-            fi
-            echo "Build failed, retrying in 10s..."
-            sleep 10
-          done
+        run: bun run build
 
       - name: Package targets
-        run: |
-          attempts=0
-          max_attempts=3
-          until [ "$attempts" -ge "$max_attempts" ]; do
-            attempts=$((attempts + 1))
-            echo "Package attempt $attempts/$max_attempts"
-            if bun run package; then
-              break
-            fi
-            if [ "$attempts" -ge "$max_attempts" ]; then
-              echo "Package failed after $max_attempts attempts"
-              exit 1
-            fi
-            echo "Package failed, retrying in 10s..."
-            sleep 10
-          done
+        run: bun run package
 
-      - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v2
+      - name: Upload packaged artifacts
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: ${{ steps.release_meta.outputs.tag }}
-          name: Release ${{ steps.release_meta.outputs.tag }}
-          generate_release_notes: true
-          files: |
+          name: release-packages
+          path: |
             dist/**/*.zip
             dist/**/*.tar.gz
-          fail_on_unmatched_files: true
