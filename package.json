@@ -7,9 +7,7 @@
     "@typescript/native-preview": "^7.0.0-dev.20260215.1",
     "commander": "^14.0.3",
     "fast-glob": "^3.3.3",
-    "pino": "^10.3.1"
-  },
-  "peerDependencies": {
+    "pino": "^10.3.1",
     "typescript": "^5"
   },
   "description": "A lightweight minimal API Testing Client tool inspired by REST Client syntax.",
