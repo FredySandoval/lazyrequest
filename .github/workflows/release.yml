@@ -50,10 +50,40 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build targets
-        run: bun run build
+        run: |
+          attempts=0
+          max_attempts=3
+          until [ "$attempts" -ge "$max_attempts" ]; do
+            attempts=$((attempts + 1))
+            echo "Build attempt $attempts/$max_attempts"
+            if bun run build; then
+              break
+            fi
+            if [ "$attempts" -ge "$max_attempts" ]; then
+              echo "Build failed after $max_attempts attempts"
+              exit 1
+            fi
+            echo "Build failed, retrying in 10s..."
+            sleep 10
+          done
 
       - name: Package targets
-        run: bun run package
+        run: |
+          attempts=0
+          max_attempts=3
+          until [ "$attempts" -ge "$max_attempts" ]; do
+            attempts=$((attempts + 1))
+            echo "Package attempt $attempts/$max_attempts"
+            if bun run package; then
+              break
+            fi
+            if [ "$attempts" -ge "$max_attempts" ]; then
+              echo "Package failed after $max_attempts attempts"
+              exit 1
+            fi
+            echo "Package failed, retrying in 10s..."
+            sleep 10
+          done
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
