@@ -12,8 +12,8 @@
   },
   "description": "A lightweight minimal API Testing Client tool inspired by REST Client syntax.",
   "scripts": {
-    "build": "bun run script/build.ts",
-    "package": "bun run script/package.ts",
+    "build": "bun run script/build-binaries.ts",
+    "package": "bun run script/package-binaries.ts",
     "test": "bun test --concurrent --timeout 30000",
     "typecheck": "tsgo --noEmit"
   }
