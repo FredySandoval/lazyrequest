@@ -12,6 +12,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   build-and-package:
     runs-on: ubuntu-latest
@@ -19,12 +22,52 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
+
+      - name: Resolve release version
+        run: |
+          set -euo pipefail
+
+          base_version="$(bun -e "import pkg from './package.json'; console.log(pkg.version)")"
+          input_version="${{ github.event.inputs.version || '' }}"
+          bump="${{ github.event.inputs.bump || '' }}"
+
+          if [ -n "$input_version" ]; then
+            version="$input_version"
+          elif [ -n "$bump" ]; then
+            bun -e "
+              import pkg from './package.json';
+              const bump = process.argv[1];
+              const parts = String(pkg.version).split('.').map((x) => Number(x));
+              if (parts.length !== 3 || parts.some(Number.isNaN)) {
+                throw new Error('package.json version must be semver major.minor.patch');
+              }
+              let [major, minor, patch] = parts;
+              if (bump === 'major') { major += 1; minor = 0; patch = 0; }
+              else if (bump === 'minor') { minor += 1; patch = 0; }
+              else if (bump === 'patch') { patch += 1; }
+              else { throw new Error('Invalid bump input'); }
+              console.log(\`\${major}.\${minor}.\${patch}\`);
+            " "$bump" > /tmp/release_version.txt
+            version="$(cat /tmp/release_version.txt)"
+          else
+            version="$base_version"
+          fi
+
+          if ! echo "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$'; then
+            echo "Invalid release version: $version"
+            exit 1
+          fi
+
+          echo "RELEASE_VERSION=$version" >> "$GITHUB_ENV"
+          echo "RELEASE_TAG=v$version" >> "$GITHUB_ENV"
 
       - name: Build targets
         run: bun run build
@@ -39,3 +82,23 @@ jobs:
           path: |
             dist/**/*.zip
             dist/**/*.tar.gz
+
+      - name: Create or update GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Release $RELEASE_TAG already exists"
+          else
+            gh release create "$RELEASE_TAG" \
+              --title "$RELEASE_TAG" \
+              --generate-notes
+          fi
+
+      - name: Upload packaged binaries to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release upload "$RELEASE_TAG" dist/*.zip dist/*.tar.gz --clobber
