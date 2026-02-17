@@ -83,6 +83,22 @@ jobs:
             dist/**/*.zip
             dist/**/*.tar.gz
 
+      - name: Setup Node for npm publish
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Publish to npm registry
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: "false"
+          NPM_CONFIG_CACHE: /tmp/npm-cache
+          RELEASE_VERSION: ${{ env.RELEASE_VERSION }}
+        run: bun run publish:npm
+
       - name: Create or update GitHub release
         env:
           GH_TOKEN: ${{ github.token }}

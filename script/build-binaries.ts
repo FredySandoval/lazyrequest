@@ -24,6 +24,8 @@ const allTargets: Target[] = [
   { os: "win32", arch: "x64", avx2: false },
 ];
 
+const releaseVersion = process.env.RELEASE_VERSION?.trim() || pkg.version;
+
 await rm("dist", { recursive: true, force: true });
 
 for (const target of allTargets) {
@@ -37,7 +39,6 @@ for (const target of allTargets) {
 
   const result = await Bun.build({
     entrypoints: ["./src/index.ts"],
-    outdir: `${targetDir}/bin`,
     target: "bun",
     compile: {
       target: targetTriple as never,
@@ -57,9 +58,10 @@ for (const target of allTargets) {
     JSON.stringify(
       {
         name: targetName,
-        version: pkg.version,
+        version: releaseVersion,
         os: [target.os],
         cpu: [target.arch],
+        ...(target.abi === "musl" ? { libc: ["musl"] } : {}),
       },
       null,
       2,
