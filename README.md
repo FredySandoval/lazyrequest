@@ -20,7 +20,7 @@ LAZYREQUEST recursively discovers `.http` and `.rest` files, automatically sends
 ## Installation methods:
 
 ```sh
-npm i -g opencode-ai@latest        # or bun/pnpm/yarn
+npm i -g lazyrequest        # or bun/pnpm/yarn
 ```
 
 ```
