@@ -17,12 +17,19 @@ LAZYREQUEST recursively discovers `.http` and `.rest` files, automatically sends
 - **Verbose logging** for debugging
 - **Bail option** to stop after N failures
 
-## Installation
+## Installation methods:
 
 ```sh
-bun install
-bun run build
+npm i -g opencode-ai@latest        # or bun/pnpm/yarn
 ```
+
+```
+git clone --depth 1  https://github.com/FredySandoval/lazyrequest.git
+cd lazyrequest
+bun build ./src/index.ts --compile --minify --outfile lazyrequest --target bun
+```
+
+Or download from releases page **[lazyrequest-v1.0.3](https://github.com/FredySandoval/lazyrequest/releases)**
 
 ## Usage
 

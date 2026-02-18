@@ -9,8 +9,6 @@ on:
       version:
         type: string
   push:
-    branches:
-      - main
     tags:
       - "v*"
 
