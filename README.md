@@ -22,7 +22,32 @@
 
 ---
 
+# Declare requests and expected responses in .http templates
+```sh
+# Declared request
+@baseUrl = http://localhost:8080
+POST {{baseUrl}}/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com"
+}
+
+###
+# Expected response
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: {{baseUrl}}/users/123
+
+{"ok":true,"id":123}
+```
+
+---
+
 LAZYREQUEST recursively discovers `.http` and `.rest` files, automatically sends HTTP requests, and compares actual responses against expected responses defined in the templates.
+
+---
 
 **Why LAZYREQUEST?** If you already use VSCode REST Client, you don't need to learn another API testing tool. LAZYREQUEST uses the same syntax for HTTP requests.
 
