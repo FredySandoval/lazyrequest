@@ -102,8 +102,8 @@ Create `.http` files to define your requests.
 - Comments
 
 ### Example Template
-Here are shown all features supported.
 
+#### /template.http - all features supported 
 ```sh
 # =========================================================
 # LAZYREQUEST feature showcase template (single file)
