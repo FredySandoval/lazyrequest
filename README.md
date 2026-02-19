@@ -11,6 +11,13 @@
 <p align="center">A lightweight minimal API Testing Client CLI tool inspired by VSCode REST Client syntax.</p>
 
 
+<p align="center">
+  <a href="https://www.npmjs.com/package/lazyrequest"><img alt="npm" src="https://img.shields.io/npm/v/lazyrequest?style=flat-square&logo=npm" /></a>
+  <a href="https://github.com/FredySandoval/lazyrequest/actions/workflows/release.yml"><img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/FredySandoval/lazyrequest/release.yml?style=flat-square&branch=main&logo=Checkmarx" /></a>
+  <a href="https://github.com/FredySandoval/lazyrequest/releases"><img alt="Total Downloads" src="https://img.shields.io/github/downloads/FredySandoval/lazyrequest/total?style=flat-square&logo=GitHub" /></a>
+</p>
+
+
 [![OpenCode Terminal UI](https://github.com/user-attachments/assets/5535b897-c638-45c5-9ebe-f86cbf62972f)](https://lazyrequest.fredy.dev)
 
 ---
