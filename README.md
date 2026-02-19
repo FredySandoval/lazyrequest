@@ -1,6 +1,19 @@
-# LAZYREQUEST
+<p align="center">
+  <a href="https://lazyrequest.fredy.dev">
+    <picture>
+      <source srcset="https://github.com/user-attachments/assets/aa948a7e-f29d-4263-8159-9f3c315aa505" media="(prefers-color-scheme: dark)">
+      <source srcset="https://github.com/user-attachments/assets/aa948a7e-f29d-4263-8159-9f3c315aa505" media="(prefers-color-scheme: light)">
+      <img width="598" height="111" alt="og-image" src="https://github.com/user-attachments/assets/aa948a7e-f29d-4263-8159-9f3c315aa505" />
+    </picture>
+  </a>
+</p>
 
-A lightweight minimal API Testing Client CLI tool inspired by VSCode REST Client syntax.
+<p align="center">A lightweight minimal API Testing Client CLI tool inspired by VSCode REST Client syntax.</p>
+
+
+[![OpenCode Terminal UI](https://github.com/user-attachments/assets/5535b897-c638-45c5-9ebe-f86cbf62972f)](https://lazyrequest.fredy.dev)
+
+---
 
 LAZYREQUEST recursively discovers `.http` and `.rest` files, automatically sends HTTP requests, and compares actual responses against expected responses defined in the templates.
 
